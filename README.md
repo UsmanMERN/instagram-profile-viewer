@@ -6,6 +6,8 @@ Hey there! I’m thrilled to share my **Instagram Profile Viewer**, a Flask-powe
 🙌 **Contributors are welcome!** If you’re excited about this project, jump in—whether it’s fixing bugs, adding features, or improving the UI. Let’s make this even better together!
 🚀 **More Tools Coming!** I’ve built tons of other cool tools like this one—think Snapchat downloaders, YouTube tools like YouTube converters, youtube downloader, and so much more. If this project gets some love, I’ll release those too, so show some support!
 
+<img width="1053" height="1089" alt="screencapture-127-0-0-1-8080-2025-09-17-01_18_50" src="https://github.com/user-attachments/assets/ff7f4a56-385e-4379-8431-9d6fa8b2fce7" />
+
 ## What’s Cool About This Project?
 
 - **Download All the Instagram Goodies**: Fetch stories, posts, reels, highlights, and profile details effortlessly.
@@ -240,4 +242,5 @@ Instagram downloader, Instagram profile viewer, Flask instagrapi, Instagram stor
 ## License
 
 This project is licensed under the MIT License. Check out the [LICENSE](LICENSE) file for details.
+
 

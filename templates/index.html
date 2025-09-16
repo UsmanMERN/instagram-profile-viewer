@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram Content Viewer</title>
+    <style>
+      :root {
+        --brand-gradient: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%);
+        --primary-text: #1c1c1e;
+        --secondary-text: #6e6e73;
+        --background-color: #ffffff;
+        --secondary-bg: #f5f5f7;
+        --border-color: #e8e8ed;
+        --error-color: #ff3b30;
+        --success-color: #34c759;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        background-color: var(--background-color);
+        color: var(--primary-text);
+        line-height: 1.6;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 1000px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: var(--primary-text);
+        font-size: clamp(28px, 4vw, 36px);
+        font-weight: 700;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+      }
+
+      h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--primary-text);
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .subtitle {
+        text-align: center;
+        color: var(--secondary-text);
+        font-size: 18px;
+        margin-bottom: 40px;
+        font-weight: 400;
+      }
+
+      .tabs {
+        display: flex;
+        background: var(--secondary-bg);
+        border-radius: 12px;
+        padding: 4px;
+        margin-bottom: 32px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+
+      .tab-button {
+        flex: 1;
+        padding: 16px 24px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--secondary-text);
+        border-radius: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+
+      .tab-button.active {
+        background: var(--brand-gradient);
+        color: #ffffff;
+        box-shadow: 0 2px 12px rgba(233, 30, 99, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .tab-button:hover:not(.active) {
+        color: var(--primary-text);
+        background: rgba(255, 255, 255, 0.6);
+      }
+
+      .tab-content {
+        display: none;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+      }
+
+      .tab-content.active {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .form-section {
+        background: var(--background-color);
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border-color);
+        margin-bottom: 24px;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      label {
+        font-weight: 600;
+        color: var(--primary-text);
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
+
+      .input-container {
+        position: relative;
+      }
+
+      input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        font-size: 16px;
+        background-color: var(--background-color);
+        transition: all 0.3s ease;
+        font-family: inherit;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #e91e63;
+        box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+        transform: translateY(-1px);
+      }
+
+      input::placeholder {
+        color: #a1a1a6;
+        font-size: 15px;
+      }
+
+      .submit-btn {
+        background: var(--brand-gradient);
+        color: white;
+        padding: 16px 32px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(233, 30, 99, 0.3);
+      }
+
+      .submit-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(233, 30, 99, 0.2);
+      }
+
+      .submit-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .submit-btn:hover::before {
+        left: 100%;
+      }
+
+      .error {
+        color: var(--error-color);
+        text-align: center;
+        font-weight: 600;
+        background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+        border: 1px solid #ffcccc;
+        padding: 20px;
+        border-radius: 12px;
+        margin: 24px 0;
+        box-shadow: 0 2px 8px rgba(255, 59, 48, 0.1);
+      }
+
+      .profile-nav-content .error {
+        margin: 0; /* Remove margin for errors inside tabs */
+      }
+
+      .results-section {
+        margin-top: 40px;
+        animation: fadeInUp 0.6s ease;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .profile-header {
+        display: flex;
+        align-items: flex-start;
+        background: var(--background-color);
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border-color);
+        margin-bottom: 24px;
+      }
+
+      .profile-pic {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 3px solid var(--secondary-bg);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        object-fit: cover;
+        margin-right: 24px;
+      }
+
+      .profile-info {
+        flex: 1;
+      }
+
+      .profile-details h2 {
+        margin: 0 0 10px 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--primary-text);
+        display: flex;
+        align-items: center;
+        border: none;
+        padding: 0;
+      }
+
+      .profile-details .username {
+        font-size: 18px;
+        font-weight: 400;
+        color: var(--secondary-text);
+        margin-left: 10px;
+      }
+
+      .verified {
+        color: #007aff;
+        margin-left: 6px;
+        font-size: 20px;
+      }
+
+      .stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-bottom: 16px;
+        color: var(--primary-text);
+      }
+
+      .stats span {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .stats strong {
+        margin-right: 4px;
+      }
+
+      .bio {
+        font-size: 16px;
+        color: var(--secondary-text);
+        line-height: 1.5;
+        margin-bottom: 16px;
+        word-break: break-word;
+        white-space: pre-wrap;
+      }
+
+      .profile-info a {
+        text-decoration: none;
+        color: #e91e63;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        font-size: 16px;
+      }
+
+      .profile-info a:hover {
+        color: #9c27b0;
+        text-decoration: underline;
+      }
+
+      .profile-nav {
+        display: flex;
+        justify-content: center;
+        background: var(--secondary-bg);
+        border-radius: 12px;
+        padding: 4px;
+        margin: 24px 0;
+        gap: 4px;
+      }
+
+      .nav-item {
+        flex: 1;
+        padding: 12px 20px;
+        text-align: center;
+        background: none;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--secondary-text);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .nav-item.active {
+        background: var(--brand-gradient);
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(233, 30, 99, 0.2);
+      }
+
+      .nav-item:hover:not(.active) {
+        background: rgba(233, 30, 99, 0.1);
+        color: #e91e63;
+      }
+      .profile-nav-content {
+        display: none;
+      }
+      .profile-nav-content.active {
+        display: block;
+      }
+
+      .item-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+        margin-top: 24px;
+      }
+
+      .item-card {
+        background: var(--background-color);
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border-color);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .item-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+      }
+
+      .media-container {
+        border-radius: 16px 16px 0 0;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+      }
+      /* Style for play button overlay on videos */
+      .media-container::after {
+        content: "▶";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 60px;
+        color: white;
+        text-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+        opacity: 0.8;
+        pointer-events: none;
+        display: var(--play-button-display, none);
+      }
+
+      .item-card img,
+      .item-card video {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 9 / 12;
+        object-fit: cover;
+        display: block;
+        background-color: #f0f0f0;
+      }
+
+      .item-info {
+        padding: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .item-info .caption {
+        font-size: 15px;
+        color: #333;
+        margin-bottom: 12px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 100px;
+        overflow-y: auto;
+      }
+
+      .item-info p {
+        margin: 0 0 12px 0;
+        font-size: 14px;
+        color: var(--secondary-text);
+        line-height: 1.4;
+      }
+
+      .item-info strong {
+        color: var(--primary-text);
+        font-weight: 600;
+      }
+
+      .view-btn {
+        display: block;
+        text-align: center;
+        background: var(--brand-gradient);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        margin-top: auto;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+      }
+
+      .view-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(233, 30, 99, 0.3);
+      }
+      .view-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+      }
+
+      .post-meta {
+        background: var(--secondary-bg);
+        padding: 24px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        border: 1px solid var(--border-color);
+      }
+
+      .post-meta p {
+        margin: 0 0 12px 0;
+        font-size: 16px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 40px;
+      }
+
+      .loading-more {
+        display: none;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #e91e63;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      .loading-more .spinner {
+        width: 30px;
+        height: 30px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .sentinel {
+        height: 20px;
+      }
+
+      /* --- Skeleton Loader Styles --- */
+      .skeleton-loader {
+        display: none;
+      }
+      .skeleton-header {
+        display: flex;
+        padding: 32px;
+        border-radius: 16px;
+        background: #fff;
+        border: 1px solid var(--border-color);
+        margin-bottom: 24px;
+      }
+      .skeleton-pic {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--secondary-bg);
+        margin-right: 24px;
+      }
+      .skeleton-info {
+        flex: 1;
+      }
+      .skeleton-line {
+        background: var(--secondary-bg);
+        border-radius: 4px;
+        margin-bottom: 10px;
+        height: 20px;
+      }
+      .skeleton-line.short {
+        width: 40%;
+      }
+      .skeleton-line.medium {
+        width: 60%;
+      }
+      .skeleton-line.long {
+        width: 90%;
+        height: 12px;
+        margin-bottom: 8px;
+      }
+      .skeleton-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+        margin-top: 24px;
+      }
+      .skeleton-card {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        height: 400px;
+      }
+      .skeleton-loader .shimmer {
+        position: relative;
+        overflow: hidden;
+      }
+      .shimmer::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 0, 0, 0.04),
+          transparent
+        );
+        animation: shimmer 1.5s infinite;
+      }
+      @keyframes shimmer {
+        100% {
+          left: 100%;
+        }
+      }
+
+      /* --- Highlights UI/UX Improvements --- */
+      .highlight-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 24px;
+        padding: 16px 0;
+      }
+      .highlight-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+      .highlight-item:hover {
+        transform: scale(1.05);
+      }
+      .highlight-cover-wrapper {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        padding: 3px;
+        background: linear-gradient(45deg, #ffde59, #ff8c42, #ff2d55);
+        margin-bottom: 8px;
+      }
+      .highlight-cover {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid var(--background-color);
+      }
+      .highlight-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--primary-text);
+        max-width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* --- Highlight Viewer Modal --- */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .modal-overlay.active {
+        display: flex;
+        opacity: 1;
+      }
+      .modal-content {
+        position: relative;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        background: #111;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+      }
+      .modal-overlay.active .modal-content {
+        transform: scale(1);
+      }
+      .modal-media {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .modal-media img,
+      .modal-media video {
+        max-width: 100%;
+        max-height: 80vh;
+        object-fit: contain;
+      }
+      .modal-media .error {
+        margin: 20px;
+        color: #fff;
+        background: #333;
+        border-color: #555;
+      }
+      .modal-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+        padding: 40px 20px 20px;
+        color: #fff;
+        font-size: 14px;
+      }
+      .modal-close,
+      .modal-nav {
+        position: absolute;
+        top: 15px;
+        cursor: pointer;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        z-index: 1001;
+        border: none;
+      }
+      .modal-close {
+        right: 15px;
+      }
+      .modal-nav {
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 24px;
+      }
+      .modal-nav.prev {
+        left: 15px;
+      }
+      .modal-nav.next {
+        right: 15px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px 16px;
+        }
+        .tabs {
+          flex-direction: column;
+          gap: 2px;
+        }
+        .profile-header {
+          flex-direction: column;
+          text-align: center;
+          align-items: center;
+        }
+        .profile-pic {
+          margin-right: 0;
+          margin-bottom: 16px;
+        }
+        .stats {
+          justify-content: center;
+        }
+      }
+
+      .media-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--secondary-text);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Instagram Content Viewer</h1>
+      <p class="subtitle">Browse Instagram Profiles and Posts</p>
+
+      <div class="tabs">
+        <button class="tab-button active" data-tab="story">
+          Profile Viewer
+        </button>
+        <button class="tab-button" data-tab="post">Post & Reel Viewer</button>
+      </div>
+
+      <div id="story" class="tab-content active">
+        <div class="form-section">
+          <form id="story-form" onsubmit="return false;">
+            <label for="username">Enter username or profile link:</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              required
+              placeholder="e.g., instagram"
+            />
+            <button type="submit" class="submit-btn">View Profile</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="post" class="tab-content">
+        <div class="form-section">
+          <form
+            action="/download_post"
+            method="post"
+            onsubmit="showLoading(); return true;"
+          >
+            <label for="post_url">Enter post or reel URL:</label>
+            <input
+              type="text"
+              id="post_url"
+              name="post_url"
+              required
+              placeholder="e.g., https://www.instagram.com/p/ABC123/"
+            />
+            <button type="submit" class="submit-btn">View Post</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+        <p>Fetching data, please wait...</p>
+      </div>
+
+      <div class="results-section">
+        <div class="skeleton-loader" id="skeletonLoader">
+          <div class="skeleton-header shimmer">
+            <div class="skeleton-pic"></div>
+            <div class="skeleton-info">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line short"></div>
+              <div class="skeleton-line medium"></div>
+              <br />
+              <div class="skeleton-line long"></div>
+              <div class="skeleton-line long"></div>
+            </div>
+          </div>
+          <div class="skeleton-grid">
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+          </div>
+        </div>
+
+        <div id="results-content">
+          {% if error %}
+          <div class="error">{{ error }}</div>
+          {% endif %} {% if story_result %}
+          <div
+            id="profile-data-container"
+            data-username="{{ story_result.username }}"
+            data-user-id="{{ story_result.user_id }}"
+          >
+            <div class="profile-header">
+              {% if story_result.profile_pic_base64 %}
+              <img
+                src="data:{{ story_result.profile_pic_type }};base64,{{ story_result.profile_pic_base64 }}"
+                alt="{{ story_result.username }}'s Profile Picture"
+                class="profile-pic"
+              />
+              {% endif %}
+              <div class="profile-info">
+                <div class="profile-details">
+                  <h2>
+                    {{ story_result.full_name }} {% if story_result.is_verified
+                    %}<span class="verified" title="Verified">✔</span>{% endif
+                    %}
+                    <span class="username">@{{ story_result.username }}</span>
+                  </h2>
+                </div>
+                <div class="stats">
+                  <span
+                    ><strong
+                      >{{ story_result.posts_count|format_number }}</strong
+                    >
+                    Posts</span
+                  >
+                  <span
+                    ><strong>{{ story_result.followers|format_number }}</strong>
+                    Followers</span
+                  >
+                  <span
+                    ><strong>{{ story_result.following|format_number }}</strong>
+                    Following</span
+                  >
+                </div>
+                <p class="bio">{{ story_result.bio|safe }}</p>
+                {% if story_result.external_url %}
+                <a
+                  href="{{ story_result.external_url }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  🔗 {{ story_result.external_url }}
+                </a>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="profile-nav">
+              <button class="nav-item active" data-tabname="stories">
+                Stories ({{ story_result.story_data|length }})
+              </button>
+              <button class="nav-item" data-tabname="posts">Posts</button>
+              <button class="nav-item" data-tabname="reels">Reels</button>
+              <button class="nav-item" data-tabname="highlights">
+                Highlights
+              </button>
+            </div>
+
+            <div id="stories" class="profile-nav-content active">
+              <div class="item-grid">
+                {% for story in story_result.story_data %}
+                <div class="item-card">
+                  <div
+                    class="media-container"
+                    style="--play-button-display: {{ 'block' if story.is_video else 'none' }};"
+                    data-is-video="{{ story.is_video }}"
+                    data-media-url="{{ story.media_url }}"
+                  >
+                    <img
+                      src="data:{{ story.preview_type }};base64,{{ story.preview_content }}"
+                      alt="Story"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="item-info">
+                    <p><strong>📅 Time:</strong> {{ story.Time }}</p>
+                    <button
+                      class="view-btn"
+                      data-media-url="{{ story.media_url }}"
+                      data-is-video="{{ story.is_video }}"
+                      data-filename="{{ story.filename }}"
+                    >
+                      ⬇️ Download {{ 'Video' if story.is_video else 'Image' }}
+                    </button>
+                  </div>
+                </div>
+                {% else %}
+                <p>No active stories found for this user.</p>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div id="posts" class="profile-nav-content">
+              <div class="item-grid"></div>
+              <div class="loading-more">
+                <div class="spinner"></div>
+              </div>
+              <div class="sentinel"></div>
+            </div>
+            <div id="reels" class="profile-nav-content">
+              <div class="item-grid"></div>
+              <div class="loading-more">
+                <div class="spinner"></div>
+              </div>
+              <div class="sentinel"></div>
+            </div>
+            <div id="highlights" class="profile-nav-content">
+              <div class="highlight-grid"></div>
+            </div>
+          </div>
+          {% endif %} {% if post_result %}
+          <div class="post-meta">
+            <p><strong>Caption:</strong> {{ post_result.caption }}</p>
+            <p>
+              <strong>❤️ Likes:</strong> {{ post_result.like_count|format_number
+              }} | <strong>💬 Comments:</strong> {{
+              post_result.comment_count|format_number }}
+            </p>
+          </div>
+          <div class="item-grid">
+            {% for media in post_result.media_data %}
+            <div class="item-card">
+              <div
+                class="media-container"
+                style="--play-button-display: {{ 'block' if media.is_video else 'none' }};"
+                data-is-video="{{ media.is_video }}"
+                data-media-url="{{ media.media_url }}"
+              >
+                <img
+                  src="data:{{ media.media_type }};base64,{{ media.preview_content }}"
+                  alt="Post Preview"
+                  loading="lazy"
+                />
+              </div>
+              <div class="item-info">
+                <button
+                  class="view-btn"
+                  data-media-url="{{ media.media_url }}"
+                  data-is-video="{{ media.is_video }}"
+                  data-filename="{{ media.filename }}"
+                >
+                  ⬇️ Download {{ 'Video' if media.is_video else 'Image' }}
+                </button>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="highlightModal">
+      <div class="modal-content">
+        <button class="modal-close">×</button>
+        <button class="modal-nav prev">‹</button>
+        <button class="modal-nav next">›</button>
+        <div class="modal-media" id="modalMedia"></div>
+        <div class="modal-info" id="modalInfo"></div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="mediaModal">
+      <div class="modal-content">
+        <button class="modal-close">×</button>
+        <div class="modal-media" id="mediaMedia"></div>
+      </div>
+    </div>
+
+    <script>
+      // Global state management
+      const contentCache = {
+        posts: {
+          next_max_id: null,
+          loaded: false,
+          loading: false,
+          hasMore: true,
+        },
+        reels: {
+          next_max_id: null,
+          loaded: false,
+          loading: false,
+          hasMore: true,
+        },
+        highlights: { loaded: false, loading: false, data: [] },
+        stories: { loaded: false },
+      };
+      let highlightState = {
+        allHighlights: [],
+        currentHighlightIndex: 0,
+        currentStoryIndex: 0,
+      };
+
+      // --- Core Functions ---
+
+      function openTab(tabName, event) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((c) => c.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-button")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById(tabName).classList.add("active");
+        event.currentTarget.classList.add("active");
+      }
+
+      function showLoading() {
+        document.getElementById("loadingSpinner").style.display = "block";
+        document.getElementById("skeletonLoader").style.display = "block";
+        document.getElementById("results-content").style.display = "none";
+      }
+
+      function hideLoading() {
+        document.getElementById("loadingSpinner").style.display = "none";
+        document.getElementById("skeletonLoader").style.display = "none";
+        document.getElementById("results-content").style.display = "block";
+      }
+
+      async function openProfileTab(tabName, element) {
+        document
+          .querySelectorAll(".profile-nav-content")
+          .forEach((c) => c.classList.remove("active"));
+        document
+          .querySelectorAll(".profile-nav .nav-item")
+          .forEach((b) => b.classList.remove("active"));
+
+        document.getElementById(tabName).classList.add("active");
+        element.classList.add("active");
+
+        if (!contentCache[tabName].loaded) {
+          await fetchDataForTab(tabName);
+          if (tabName === "posts" || tabName === "reels") {
+            setupObserver(tabName);
+          }
+        }
+      }
+
+      async function initiateDownload(downloadBtn) {
+        const mediaUrl = downloadBtn.dataset.mediaUrl;
+        const isVideo = downloadBtn.dataset.isVideo === "true";
+        const filename = downloadBtn.dataset.filename;
+
+        if (!mediaUrl || downloadBtn.disabled) return;
+
+        const originalText = downloadBtn.innerHTML;
+        downloadBtn.innerHTML = `<span class="spinner" style="border-color: #fff; border-top-color: transparent; width: 18px; height: 18px; border-width: 2px; display: inline-block; vertical-align: middle; margin-right: 8px;"></span> Processing...`;
+        downloadBtn.disabled = true;
+
+        try {
+          const response = await fetch("/download_media_content", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ media_url: mediaUrl, is_video: isVideo }),
+          });
+
+          if (!response.ok) throw new Error("Network response was not ok");
+
+          const data = await response.json();
+          if (data.error) throw new Error(data.error);
+
+          const dataUrl = `data:${data.media_type};base64,${data.content}`;
+
+          const link = document.createElement("a");
+          link.href = dataUrl;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          downloadBtn.innerHTML = originalText;
+          downloadBtn.disabled = false;
+        } catch (error) {
+          console.error("Error handling download:", error);
+          downloadBtn.innerHTML = "❌ Download Failed";
+          setTimeout(() => {
+            downloadBtn.innerHTML = originalText;
+            downloadBtn.disabled = false;
+          }, 2000);
+        }
+      }
+
+      async function fetchDataForTab(tabName, max_id = null) {
+        if (
+          contentCache[tabName].loading ||
+          (tabName !== "highlights" && !contentCache[tabName].hasMore)
+        )
+          return;
+        contentCache[tabName].loading = true;
+
+        const profileContainer = document.getElementById(
+          "profile-data-container"
+        );
+        if (!profileContainer) return;
+
+        const username = profileContainer.dataset.username;
+        const userId = profileContainer.dataset.userId;
+        const tabContainer = document.getElementById(tabName);
+        const targetContainer = tabContainer.querySelector(
+          ".item-grid, .highlight-grid"
+        );
+        const loadingMoreSpinner = tabContainer.querySelector(".loading-more");
+        const url = `/get_${tabName}?username=${username}&user_id=${userId}${
+          max_id ? `&max_id=${max_id}` : ""
+        }`;
+
+        if (!max_id) {
+          targetContainer.innerHTML =
+            '<div class="loading-spinner" style="display: block; padding: 20px;"><div class="spinner"></div></div>';
+        } else if (loadingMoreSpinner) {
+          loadingMoreSpinner.style.display = "block";
+        }
+
+        try {
+          const response = await fetch(url);
+          if (!response.ok)
+            throw new Error(
+              `Failed to load content (Error: ${response.status})`
+            );
+          const data = await response.json();
+          if (!max_id) targetContainer.innerHTML = "";
+
+          contentCache[tabName].loaded = true;
+
+          if (tabName === "posts" || tabName === "reels") {
+            renderPaginatedContent(tabName, data[tabName], targetContainer);
+            contentCache[tabName].next_max_id = data.next_max_id;
+            contentCache[tabName].hasMore = !!data.next_max_id;
+            if (
+              !data.next_max_id &&
+              (!data[tabName] || data[tabName].length === 0)
+            ) {
+              if (targetContainer.innerHTML === "")
+                targetContainer.innerHTML = `<p>No ${tabName} found.</p>`;
+            }
+          } else if (tabName === "highlights") {
+            highlightState.allHighlights = data.highlights;
+            renderHighlights(data.highlights, targetContainer);
+          }
+        } catch (error) {
+          console.error(`Error fetching ${tabName}:`, error);
+          targetContainer.innerHTML = `<div class="error">Could not load ${tabName}. ${error.message}. Please check if the backend is configured correctly.</div>`;
+        } finally {
+          contentCache[tabName].loading = false;
+          if (loadingMoreSpinner) {
+            loadingMoreSpinner.style.display = "none";
+          }
+        }
+      }
+
+      function setupObserver(tabName) {
+        const sentinel = document.querySelector(`#${tabName} .sentinel`);
+        if (!sentinel) return;
+        const observer = new IntersectionObserver(
+          (entries) => {
+            if (
+              entries[0].isIntersecting &&
+              contentCache[tabName].hasMore &&
+              !contentCache[tabName].loading
+            ) {
+              fetchDataForTab(tabName, contentCache[tabName].next_max_id);
+            }
+          },
+          { threshold: 0.1 }
+        );
+        observer.observe(sentinel);
+      }
+
+      // --- Rendering Functions ---
+
+      // =================================================================
+      // ====== MODIFIED FUNCTION TO FIX RENDERING ISSUE =================
+      // =================================================================
+      function renderPaginatedContent(type, items, container) {
+        if (!items || items.length === 0) {
+          if (!container.hasChildNodes())
+            container.innerHTML = `<p>No ${type} found.</p>`;
+          return;
+        }
+
+        // Use flatMap to create a separate card for each media item in a post.
+        // This ensures that carousels are rendered as individual cards.
+        const contentHtml = items
+          .flatMap((item) =>
+            item.media_data.map(
+              (media) => `
+          <div class="item-card">
+            <div class="media-container" 
+                  style="--play-button-display: ${
+                    media.is_video ? "block" : "none"
+                  };" 
+                  data-is-video="${media.is_video}" 
+                  data-media-url="${media.media_url}">
+                <img src="data:${media.media_type};base64,${
+                media.preview_content
+              }" alt="Preview" loading="lazy">
+            </div>
+            <div class="item-info">
+              <p class="caption">${item.caption ? item.caption : ""}</p>
+              <p><strong>📅 Time:</strong> ${item.time}</p>
+              <p><strong>❤️ Likes:</strong> ${formatNumber(
+                item.like_count
+              )} | <strong>💬 Comments:</strong> ${formatNumber(
+                item.comment_count
+              )}</p>
+              ${
+                type === "reels"
+                  ? `<p><strong>▶️ Plays:</strong> ${formatNumber(
+                      item.play_count || 0
+                    )} | <strong>👀 Views:</strong> ${formatNumber(
+                      item.view_count || 0
+                    )}</p>`
+                  : ""
+              }
+              <button class="view-btn" 
+                      data-media-url="${media.media_url}" 
+                      data-is-video="${media.is_video}"
+                      data-filename="${media.filename}">
+                ⬇️ Download ${media.is_video ? "Video" : "Image"}
+              </button>
+            </div>
+          </div>
+        `
+            )
+          )
+          .join("");
+        container.insertAdjacentHTML("beforeend", contentHtml);
+      }
+
+      function renderHighlights(highlights, container) {
+        if (!highlights || highlights.length === 0) {
+          container.innerHTML = `<p>No highlights found.</p>`;
+          return;
+        }
+        const contentHtml = highlights
+          .map(
+            (hl, index) => `
+              <div class="highlight-item" data-highlight-index="${index}">
+                  <div class="highlight-cover-wrapper">
+                      <img src="data:${hl.cover_type};base64,${hl.cover_base64}" alt="${hl.title}" class="highlight-cover" loading="lazy" />
+                  </div>
+                  <span class="highlight-title">${hl.title}</span>
+              </div>`
+          )
+          .join("");
+        container.innerHTML = contentHtml;
+      }
+
+      // --- Highlight Modal Functions ---
+
+      async function loadHighlightStories(highlightIndex) {
+        const highlight = highlightState.allHighlights[highlightIndex];
+        if (highlight.story_data) return;
+
+        const profileContainer = document.getElementById(
+          "profile-data-container"
+        );
+        const username = profileContainer.dataset.username;
+        const userId = profileContainer.dataset.userId;
+        const url = `/get_highlight_items?username=${username}&user_id=${userId}&highlight_id=${highlight.id}`;
+
+        try {
+          const response = await fetch(url);
+          if (!response.ok)
+            throw new Error("Failed to load stories from the server");
+          const data = await response.json();
+          highlight.story_data = data.story_data;
+        } catch (error) {
+          console.error("Error loading highlight stories:", error);
+          highlight.story_data = {
+            error: `Failed to load stories: ${error.message}`,
+          };
+        }
+      }
+
+      async function openHighlightModal(highlightIndex) {
+        const modalMedia = document.getElementById("modalMedia");
+        modalMedia.innerHTML = '<div class="spinner"></div>';
+        document.getElementById("modalInfo").innerHTML = "";
+
+        highlightState.currentHighlightIndex = highlightIndex;
+        highlightState.currentStoryIndex = 0;
+
+        document.getElementById("highlightModal").classList.add("active");
+        document.body.style.overflow = "hidden";
+
+        await loadHighlightStories(highlightIndex);
+        renderHighlightStory();
+      }
+
+      function closeHighlightModal() {
+        document.getElementById("highlightModal").classList.remove("active");
+        document.body.style.overflow = "";
+        document.getElementById("modalMedia").innerHTML = "";
+      }
+
+      function navigateHighlight(direction) {
+        const stories =
+          highlightState.allHighlights[highlightState.currentHighlightIndex]
+            .story_data;
+        if (!stories || stories.error) return;
+
+        if (
+          direction === "next" &&
+          highlightState.currentStoryIndex < stories.length - 1
+        ) {
+          highlightState.currentStoryIndex++;
+        } else if (
+          direction === "prev" &&
+          highlightState.currentStoryIndex > 0
+        ) {
+          highlightState.currentStoryIndex--;
+        }
+        renderHighlightStory();
+      }
+
+      function renderHighlightStory() {
+        const highlight =
+          highlightState.allHighlights[highlightState.currentHighlightIndex];
+        const modalMedia = document.getElementById("modalMedia");
+        const modalInfo = document.getElementById("modalInfo");
+
+        if (highlight.story_data.error) {
+          modalMedia.innerHTML = `<div class="error">${highlight.story_data.error}</div>`;
+          modalInfo.innerHTML = "";
+          document.querySelector(".modal-nav.prev").style.display = "none";
+          document.querySelector(".modal-nav.next").style.display = "none";
+          return;
+        }
+
+        const story = highlight.story_data[highlightState.currentStoryIndex];
+        if (!story) {
+          modalMedia.innerHTML = `<p class="error">No story data available.</p>`;
+          return;
+        }
+
+        modalMedia.innerHTML = story.media_type.includes("image")
+          ? `<img src="data:${story.media_type};base64,${story.content}" alt="Highlight Story">`
+          : `<video autoplay controls src="data:${story.media_type};base64,${story.content}" type="${story.media_type}"></video>`;
+
+        modalInfo.innerHTML = `<p><strong>${highlight.title}</strong> (${
+          highlightState.currentStoryIndex + 1
+        }/${highlight.story_data.length})</p><p>${story.Time}</p>`;
+
+        document.querySelector(".modal-nav.prev").style.display =
+          highlightState.currentStoryIndex > 0 ? "flex" : "none";
+        document.querySelector(".modal-nav.next").style.display =
+          highlightState.currentStoryIndex < highlight.story_data.length - 1
+            ? "flex"
+            : "none";
+      }
+
+      // --- Media Modal Functions ---
+
+      async function openMediaModal(mediaUrl, isVideo) {
+        const modalMedia = document.getElementById("mediaMedia");
+        modalMedia.innerHTML = '<div class="spinner"></div>';
+
+        document.getElementById("mediaModal").classList.add("active");
+        document.body.style.overflow = "hidden";
+
+        try {
+          const response = await fetch("/download_media_content", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ media_url: mediaUrl, is_video: isVideo }),
+          });
+
+          if (!response.ok) throw new Error("Network response was not ok");
+
+          const data = await response.json();
+          if (data.error) throw new Error(data.error);
+
+          if (isVideo) {
+            modalMedia.innerHTML = `<video autoplay controls src="data:${data.media_type};base64,${data.content}" type="${data.media_type}"></video>`;
+          } else {
+            modalMedia.innerHTML = `<img src="data:${data.media_type};base64,${data.content}" alt="Media">`;
+          }
+        } catch (error) {
+          console.error("Error loading media:", error);
+          modalMedia.innerHTML = `<div class="error">${error.message}</div>`;
+        }
+      }
+
+      function closeMediaModal() {
+        document.getElementById("mediaModal").classList.remove("active");
+        document.body.style.overflow = "";
+        document.getElementById("mediaMedia").innerHTML = "";
+      }
+
+      // --- Utility Functions ---
+
+      function formatNumber(value) {
+        const num = parseInt(value, 10);
+        if (isNaN(num)) return "0";
+        if (num >= 1e6) return (num / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
+        if (num >= 1e3) return (num / 1e3).toFixed(1).replace(/\.0$/, "") + "K";
+        return num.toString();
+      }
+
+      function sendHeight() {
+        if (window.parent) {
+          window.parent.postMessage(
+            { height: document.body.scrollHeight },
+            "*"
+          );
+        }
+      }
+
+      function renderProfile(profile) {
+        const content = `
+          <div id="profile-data-container" data-username="${
+            profile.username
+          }" data-user-id="${profile.user_id}">
+            <div class="profile-header">
+              ${
+                profile.profile_pic_base64
+                  ? `<img src="data:${profile.profile_pic_type};base64,${profile.profile_pic_base64}" alt="${profile.username}'s Profile Picture" class="profile-pic" />`
+                  : ""
+              }
+              <div class="profile-info">
+                <div class="profile-details">
+                  <h2>
+                    ${profile.full_name} ${
+          profile.is_verified
+            ? '<span class="verified" title="Verified">✔</span>'
+            : ""
+        }
+                    <span class="username">@${profile.username}</span>
+                  </h2>
+                </div>
+                <div class="stats">
+                  <span><strong>${formatNumber(
+                    profile.posts_count
+                  )}</strong> Posts</span>
+                  <span><strong>${formatNumber(
+                    profile.followers
+                  )}</strong> Followers</span>
+                  <span><strong>${formatNumber(
+                    profile.following
+                  )}</strong> Following</span>
+                </div>
+                <p class="bio">${profile.bio.replace(/\n/g, "<br>")}</p>
+                ${
+                  profile.external_url
+                    ? `<a href="${profile.external_url}" target="_blank" rel="noopener noreferrer">🔗 ${profile.external_url}</a>`
+                    : ""
+                }
+              </div>
+            </div>
+
+            <div class="profile-nav">
+              <button class="nav-item active" data-tabname="stories">Stories (0)</button>
+              <button class="nav-item" data-tabname="posts">Posts</button>
+              <button class="nav-item" data-tabname="reels">Reels</button>
+              <button class="nav-item" data-tabname="highlights">Highlights</button>
+            </div>
+
+            <div id="stories" class="profile-nav-content active">
+              <div class="item-grid" id="stories-grid"></div>
+            </div>
+            <div id="posts" class="profile-nav-content">
+              <div class="item-grid"></div>
+              <div class="loading-more">
+                <div class="spinner"></div>
+              </div>
+              <div class="sentinel"></div>
+            </div>
+            <div id="reels" class="profile-nav-content">
+              <div class="item-grid"></div>
+              <div class="loading-more">
+                <div class="spinner"></div>
+              </div>
+              <div class="sentinel"></div>
+            </div>
+            <div id="highlights" class="profile-nav-content">
+              <div class="highlight-grid"></div>
+            </div>
+          </div>
+        `;
+        document.getElementById("results-content").innerHTML = content;
+        // Reattach event listeners for nav
+        const profileNav = document.querySelector(".profile-nav");
+        if (profileNav) {
+          profileNav.addEventListener("click", (event) => {
+            const navItem = event.target.closest(".nav-item");
+            if (navItem && !navItem.classList.contains("active")) {
+              openProfileTab(navItem.dataset.tabname, navItem);
+            }
+          });
+        }
+      }
+
+      function renderStories(stories) {
+        const grid = document.getElementById("stories-grid");
+        if (!grid) return;
+        let html = "";
+        if (stories.length === 0) {
+          html = "<p>No active stories found for this user.</p>";
+        } else {
+          stories.forEach((story) => {
+            html += `
+            <div class="item-card">
+              <div class="media-container" style="--play-button-display: ${
+                story.is_video ? "block" : "none"
+              };" data-is-video="${story.is_video}" data-media-url="${
+              story.media_url
+            }">
+                <img src="data:${story.preview_type};base64,${
+              story.preview_content
+            }" alt="Story" loading="lazy" />
+              </div>
+              <div class="item-info">
+                <p><strong>📅 Time:</strong> ${story.Time}</p>
+                <button class="view-btn" data-media-url="${
+                  story.media_url
+                }" data-is-video="${story.is_video}" data-filename="${
+              story.filename
+            }">
+                  ⬇️ Download ${story.is_video ? "Video" : "Image"}
+                </button>
+              </div>
+            </div>
+            `;
+          });
+        }
+        grid.innerHTML = html;
+        // Update stories count
+        const storiesButton = document.querySelector(
+          '[data-tabname="stories"]'
+        );
+        if (storiesButton) {
+          storiesButton.textContent = `Stories (${stories.length})`;
+        }
+      }
+
+      // --- Main Execution ---
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const hasResults =
+          !!document.getElementById("profile-data-container") ||
+          !!document.querySelector(".post-meta");
+        const hasError = !!document.querySelector(".results-section .error");
+
+        if (hasResults || hasError) {
+          hideLoading();
+        }
+
+        if (hasResults) {
+          contentCache.stories.loaded = true;
+        }
+
+        document.querySelectorAll(".tab-button").forEach((button) => {
+          button.addEventListener("click", (event) =>
+            openTab(button.dataset.tab, event)
+          );
+        });
+
+        const storyForm = document.getElementById("story-form");
+        if (storyForm) {
+          storyForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const username = document.getElementById("username").value.trim();
+            if (!username) return;
+            showLoading();
+            try {
+              const profileRes = await fetch(
+                `/profile?username=${encodeURIComponent(username)}`
+              );
+              if (!profileRes.ok) throw new Error("Failed to fetch profile");
+              const profile = await profileRes.json();
+              if (profile.error) throw new Error(profile.error);
+              renderProfile(profile);
+
+              const storiesGrid = document.getElementById("stories-grid");
+              if (storiesGrid) {
+                storiesGrid.innerHTML =
+                  '<div class="loading-spinner" style="display: block; padding: 20px;"><div class="spinner"></div></div>';
+              }
+
+              hideLoading();
+
+              // Fetch stories in the background and then render them
+              const storiesRes = await fetch(
+                `/stories?username=${encodeURIComponent(username)}&user_id=${
+                  profile.user_id
+                }`
+              );
+              if (!storiesRes.ok) throw new Error("Failed to fetch stories");
+              const storiesData = await storiesRes.json();
+              if (storiesData.error) throw new Error(storiesData.error);
+              renderStories(storiesData["Story Data"]);
+            } catch (error) {
+              const resultsContent = document.getElementById("results-content");
+              const storiesGrid = document.getElementById("stories-grid");
+              if (storiesGrid) {
+                storiesGrid.innerHTML = `<div class="error" style="margin:0;">${error.message}</div>`;
+              } else if (resultsContent) {
+                resultsContent.innerHTML = `<div class="error">${error.message}</div>`;
+              }
+              hideLoading();
+            }
+          });
+        }
+
+        const resultsContent = document.getElementById("results-content");
+        if (resultsContent) {
+          // Use event delegation to handle clicks on dynamic content
+          resultsContent.addEventListener("click", (event) => {
+            const highlightItem = event.target.closest(".highlight-item");
+            if (highlightItem) {
+              const index = parseInt(highlightItem.dataset.highlightIndex, 10);
+              openHighlightModal(index);
+              return;
+            }
+
+            const mediaContainer = event.target.closest(".media-container");
+            if (mediaContainer && mediaContainer.dataset.mediaUrl) {
+              const isVideo = mediaContainer.dataset.isVideo === "true";
+              const mediaUrl = mediaContainer.dataset.mediaUrl;
+              openMediaModal(mediaUrl, isVideo);
+              return;
+            }
+
+            const downloadBtn = event.target.closest(".view-btn");
+            if (downloadBtn) {
+              initiateDownload(downloadBtn);
+              return;
+            }
+          });
+        }
+
+        const modal = document.getElementById("highlightModal");
+        if (modal) {
+          modal
+            .querySelector(".modal-close")
+            .addEventListener("click", closeHighlightModal);
+          modal
+            .querySelector(".modal-nav.prev")
+            .addEventListener("click", () => navigateHighlight("prev"));
+          modal
+            .querySelector(".modal-nav.next")
+            .addEventListener("click", () => navigateHighlight("next"));
+        }
+
+        const mediaModal = document.getElementById("mediaModal");
+        if (mediaModal) {
+          mediaModal
+            .querySelector(".modal-close")
+            .addEventListener("click", closeMediaModal);
+        }
+
+        sendHeight();
+        const observer = new MutationObserver(() => sendHeight());
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          characterData: true,
+        });
+      });
+    </script>
+  </body>
+</html>

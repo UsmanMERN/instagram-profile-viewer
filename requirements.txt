@@ -1,0 +1,12 @@
+requests
+PySocks
+pydantic
+moviepy
+pycryptodomex
+flask
+lxml
+pytz
+requests
+beautifulsoup4
+pytz
+gunicorn

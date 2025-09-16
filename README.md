@@ -1,25 +1,28 @@
-# Instagram Downloader: My Flask & Instagrapi Project
+# Instagram Profile Viewer: My Flask & Instagrapi Project
 
-Hey there! I built this awesome Flask application to download Instagram stories, posts, reels, highlights, and profile details using the **instagrapi** library. I’m super proud of the sleek, user-friendly UI/UX I designed—it’s responsive, intuitive, and makes downloading Instagram content a breeze! Whether you're fetching stories or exploring a profile’s details, this app has you covered. I’ve also optimized it for serverless deployment on **Vercel** and included a **Dockerfile** for traditional hosting. Everything works smoothly, with lazy loading, pagination, and robust error handling to keep things running like a charm.
+Hey there! I’m thrilled to share my **Instagram Profile Viewer**, a Flask-powered app I built to download Instagram stories, posts, reels, highlights, and profile details using the awesome **instagrapi** library. I poured my heart into creating a sleek, user-friendly UI/UX that’s responsive and intuitive, making it super easy to explore and download Instagram content. Whether you’re grabbing stories or diving into profile details, this app has it all! I’ve optimized it for serverless deployment on **Vercel** and included a **Dockerfile** for traditional hosting. With lazy loading, pagination, and robust error handling, everything runs smoothly. I’d love for you to check it out, star the repo, and maybe even contribute!
+
+🌟 **Please star this repo** on [GitHub](https://github.com/UsmanMERN/instagram-profile-viewer) to show your support and help others find this project!  
+🙌 **Contributors are welcome!** If you’re excited about this project, jump in—whether it’s fixing bugs, adding features, or improving the UI. Let’s make this even better together!
 
 ## What’s Cool About This Project?
 
-- **Download All the Instagram Goodies**: Grab stories, posts, reels, highlights, and profile details with ease.
-- **Stunning UI/UX**: I poured my heart into creating a modern, responsive interface that looks great on any device—desktop, tablet, or mobile.
-- **Lazy Loading Magic**: Media previews load first, and full content is fetched only when you need it, keeping things fast and efficient.
-- **Pagination Done Right**: Scroll through posts and reels seamlessly with paginated API endpoints.
-- **Smart Session Management**: Uses **instagrapi** to store Instagram login sessions in a `session.json` file, so you don’t have to log in repeatedly.
-- **Timezone Support**: Converts timestamps to Asia/Kolkata timezone for a localized experience.
-- **Serverless Ready**: Deployed effortlessly on Vercel with a custom `vercel.json` configuration.
-- **Docker Support**: Included a `Dockerfile` for containerized deployment on any server.
-- **Error Handling**: Handles Instagram rate limits, invalid sessions, and private accounts gracefully.
-- **Custom Number Formatting**: Added a Jinja2 filter to display follower counts and more in a human-readable format (e.g., 1.2M, 5.6K).
-- **SEO-Friendly**: Packed with keywords to make this project easy to find for anyone looking to download Instagram content.
+- **Download All the Instagram Goodies**: Fetch stories, posts, reels, highlights, and profile details effortlessly.
+- **Stunning UI/UX**: I crafted a modern, responsive interface that shines on desktops, tablets, and phones.
+- **Lazy Loading Magic**: Media previews load first, with full content fetched on demand for a fast, efficient experience.
+- **Pagination Done Right**: Seamlessly scroll through posts and reels with paginated API endpoints.
+- **Smart Session Management**: Uses **instagrapi** to store login sessions in a `session.json` file, so you don’t need to log in repeatedly.
+- **Timezone Support**: Converts timestamps to Asia/Kolkata timezone for a localized touch.
+- **Serverless Ready**: Deploys effortlessly on Vercel with a custom `vercel.json` configuration.
+- **Docker Support**: Includes a `Dockerfile` for containerized deployment on any server.
+- **Error Handling**: Gracefully handles Instagram rate limits, invalid sessions, and private accounts.
+- **Custom Number Formatting**: Added a Jinja2 filter to display follower counts in a readable format (e.g., 1.2M, 5.6K).
+- **SEO-Friendly**: Packed with keywords to help folks find this project when searching for Instagram downloaders.
 
 ## Tech Stack I Used
 
-- **Backend**: Flask (my go-to Python web framework)
-- **Instagram API**: instagrapi (huge shoutout to this amazing library!)
+- **Backend**: Flask (my favorite Python web framework)
+- **Instagram API**: instagrapi (huge props to this amazing library!)
 - **Frontend**: HTML, CSS, JavaScript (with a polished, responsive UI)
 - **Deployment**: Vercel for serverless hosting, Docker for containerized setups
 - **Dependencies**: Python 3.9+, requests, pytz, base64, Flask, instagrapi
@@ -39,7 +42,7 @@ Hey there! I built this awesome Flask application to download Instagram stories,
 
 1. **Clone My Repo**
    ```bash
-   git clone https://github.com/UsmanMERN/instagram-profile-viewer
+   git clone https://github.com/UsmanMERN/instagram-profile-viewer.git
    cd instagram-profile-viewer
    ```
 
@@ -61,7 +64,7 @@ Hey there! I built this awesome Flask application to download Instagram stories,
      PASSWORD = "your_instagram_password_here"
      SESSION_FILE = "session.json"
      ```
-   - **Pro Tip**: Keep your credentials safe! Never commit them to a public repo.
+   - **Pro Tip**: Keep your credentials secure! Never commit them to a public repo.
 
 5. **Run the App Locally**
    ```bash
@@ -112,7 +115,7 @@ pip install -r requirements.txt
          "src": "/(.*)",
          "dest": "app.py"
        }
-     ],
+     ]
    }
    ```
 
@@ -124,7 +127,7 @@ pip install -r requirements.txt
    - Set environment variables (`USERNAME`, `PASSWORD`, `SESSION_FILE`) in the Vercel dashboard.
 
 4. **Access Your App**
-   - Vercel will give you a shiny URL (e.g., `https://your-app-name.vercel.app`) to access the app.
+   - Vercel will provide a URL (e.g., `https://your-app-name.vercel.app`) to access the app.
 
 ### Docker (Containerized Hosting)
 
@@ -153,8 +156,8 @@ pip install -r requirements.txt
 
 2. **Build and Run the Docker Container**
    ```bash
-   docker build -t instagram-downloader .
-   docker run -p 8080:8080 -e USERNAME=your_username -e PASSWORD=your_password instagram-downloader
+   docker build -t instagram-profile-viewer .
+   docker run -p 8080:8080 -e USERNAME=your_username -e PASSWORD=your_password instagram-profile-viewer
    ```
 
 3. **Access the App**
@@ -162,7 +165,7 @@ pip install -r requirements.txt
 
 ## How to Use It
 
-1. **Home Page**: Hit the root URL (`/`) to see my awesome UI, starting with the "Stories" tab.
+1. **Home Page**: Visit the root URL (`/`) to see my awesome UI, starting with the "Stories" tab.
 2. **Download Stories**: Enter an Instagram username to fetch stories, complete with previews and viewer details (for your own stories).
 3. **Download Posts/Reels**: Paste a post or reel URL to grab media and metadata like likes, comments, and captions.
 4. **View Highlights**: Check out highlight metadata and load individual items on demand.
@@ -185,12 +188,28 @@ pip install -r requirements.txt
 
 ## The UI/UX I’m Proud Of
 
-- **Responsive Design**: Looks amazing on any device—desktop, tablet, or phone.
+- **Responsive Design**: Looks fantastic on any device—desktop, tablet, or phone.
 - **Smooth Navigation**: Tabs for stories, posts, reels, and highlights with clear, intuitive controls.
 - **Media Previews**: Shows base64-encoded previews for stories, posts, reels, and highlights to keep things snappy.
 - **Interactive Goodies**: Pagination and on-demand loading make browsing a joy.
 - **User-Friendly Errors**: Clear messages for invalid inputs, private accounts, or API hiccups.
 - **Profile Display**: Shows off profile details with formatted follower counts and clickable external links.
+
+## 🙌 Contribute to the Project!
+
+I’d love to see this project grow with contributions from the community! Whether you’re fixing bugs, adding new features, improving the UI, or optimizing performance, your input is super welcome. Check out the [GitHub repo](https://github.com/UsmanMERN/instagram-profile-viewer) to get started. Here’s how you can contribute:
+
+1. Fork the repo.
+2. Create a new branch (`git checkout -b feature/awesome-feature`).
+3. Make your changes and commit them (`git commit -m 'Add awesome feature'`).
+4. Push to your branch (`git push origin feature/awesome-feature`).
+5. Open a pull request and let’s chat about your ideas!
+
+Feel free to open issues for bugs, feature requests, or just to share feedback. Let’s make this project even more awesome together!
+
+## 🌟 Show Some Love!
+
+If you find this project useful or just think it’s cool, please give it a **star** on [GitHub](https://github.com/UsmanMERN/instagram-profile-viewer)! It helps others discover the project and keeps me motivated to keep improving it. Share it with friends, tweet about it, or drop a comment in the issues section—I’d love to hear what you think!
 
 ## 🙏 Credits
 
@@ -208,11 +227,15 @@ This application is for **educational purposes only**. It is not affiliated with
 
 ## Notes
 
-- **Rate Limits**: I added delays (`time.sleep` and `delay_range`) to play nice with Instagram’s rate limits and avoid bot detection.
+- **Rate Limits**: I added delays (`time.sleep` and `delay_range`) to respect Instagram’s rate limits and avoid bot detection.
 - **Private Accounts**: Some features (like stories or posts) may be limited for private accounts unless you follow them.
 - **Session Management**: The `session.json` file keeps your login session safe. Don’t expose it in public deployments!
 - **Security**: Store your Instagram credentials securely (e.g., as environment variables) and avoid hardcoding them in production.
 
 ## Keywords
 
-Instagram downloader, Flask instagrapi, Instagram stories downloader, Instagram reels downloader, Instagram posts downloader, Instagram highlights downloader, social media scraper, Flask API, serverless deployment, Vercel Flask app, Docker Python app, Instagram profile details, lazy loading media, responsive UI/UX, social media automation, Python web app.
+Instagram downloader, Instagram profile viewer, Flask instagrapi, Instagram stories downloader, Instagram reels downloader, Instagram posts downloader, Instagram highlights downloader, social media scraper, Flask API, serverless deployment, Vercel Flask app, Docker Python app, Instagram profile details, lazy loading media, responsive UI/UX, social media automation, Python web app.
+
+## License
+
+This project is licensed under the MIT License. Check out the [LICENSE](LICENSE) file for details.
